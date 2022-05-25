@@ -28,12 +28,14 @@ const game = (() => {
         }
 
         
-        const addListeners = (player)=>{
+        const listeners = (()=>{
             let allSpaces = document.querySelectorAll('.game-board div');
-            allSpaces.forEach((space)=>{
-                space.onclick = ()=>
-                {playTurn(player,space)}})
-        }
+            const add = (player)=> {allSpaces.forEach((space)=>{
+                space.onclick = ()=> {playTurn(player,space)}})}
+            const clear = ()=> {allSpaces.forEach((space)=> space.onclick = null)}
+            
+            return {add, clear}
+        })();
 
         const checkWin = ()=>{
             const checkSame = (start,step,result)=>{
@@ -49,7 +51,7 @@ const game = (() => {
             return result;
         }
 
-        return {setSpace, checkSpace, addListeners, playTurn, checkWin}
+        return {setSpace, checkSpace, listeners, playTurn, checkWin}
 
     })();
 
@@ -59,11 +61,16 @@ const game = (() => {
         let attempt = player.makeMove(space.getAttribute('data-space'));
         if (!attempt) return;
 
-        if(gameBoard.checkWin()) console.log('You won!');
+        if(gameBoard.checkWin()) {winner(player); return;}
 
         nextPlayerIndex = Math.abs(players.indexOf(player) - 1)
-        gameBoard.addListeners(players[nextPlayerIndex])
+        gameBoard.listeners.add(players[nextPlayerIndex])
     };
+
+    const winner = (player) =>{
+        setTimeout(()=> {alert(player.getName() + " WON!")},200);
+        gameBoard.listeners.clear();
+    }
 
     const playGame = ()=>{
 
@@ -74,7 +81,7 @@ const game = (() => {
         players.push(player('awe','Q'));
         b = players[1]
 
-        gameBoard.addListeners(a)
+        gameBoard.listeners.add(a)
     }
 
     return{playGame, players, board:gameBoard, player}
