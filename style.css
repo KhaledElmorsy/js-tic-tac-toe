@@ -1,0 +1,8 @@
+.game-board {
+    display: grid;
+    grid-template: repeat(3,70px) / repeat(3, 70px);
+}
+
+.game-board div{
+    font-size: 40px;
+}
