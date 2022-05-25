@@ -1,17 +1,18 @@
 const game = (() => {
 
     const player = ((name, marker) => {
-        const setName = (a)=> {name = a};
-        const getName = ()=> name;
+        const setName = (a) => { name = a };
+        const getName = () => name;
 
-        const setMarker = (m)=>{marker = m};
-        const getMarker = ()=> marker;
+        const setMarker = (m) => { marker = m };
+        const getMarker = () => marker;
 
-        const makeMove = function(spaceIndex) {
+        const makeMove = function (spaceIndex) {
             if (!gameBoard.checkSpace(spaceIndex)) {
                 gameBoard.setSpace(spaceIndex, this);
                 return true;
             } else {
+                gameBoard.colorSpace.cantPlace(spaceIndex);
                 return false;
             }
         }
@@ -20,72 +21,90 @@ const game = (() => {
 
     const gameBoard = (() => {
         var spaces = [];
+        const docSpace = (spaceIndex) => document.querySelector(`[data-space="${spaceIndex}"]`);
         const checkSpace = (spaceIndex) => spaces[spaceIndex];
-        const setSpace = (spaceIndex, player)=> {
+        const setSpace = (spaceIndex, player) => {
             spaces[spaceIndex] = player
-            let space = document.querySelector(`[data-space="${spaceIndex}"]`)
+            let space = docSpace(spaceIndex)
             space.innerText = player.getMarker();
             space.classList.toggle('appear');
-            space.classList.toggle('player-'+(players.indexOf(player)+1))
+            space.classList.toggle('player-' + (players.indexOf(player) + 1))
         }
-        
-        const listeners = (()=>{
+
+        const listeners = (() => {
             let allSpaces = document.querySelectorAll('.game-board div');
-            const add = (player)=> {allSpaces.forEach((space)=>{
-                space.onclick = ()=> {playTurn(player,space)}})}
-            const clear = ()=> {allSpaces.forEach((space)=> space.onclick = null)}
-            
-            return {add, clear}
+            const add = (player) => {
+                allSpaces.forEach((space) => {
+                    space.onclick = () => { playTurn(player, space) }
+                })
+            }
+            const clear = () => { allSpaces.forEach((space) => space.onclick = null) }
+
+            return { add, clear }
         })();
 
-        const checkWin = ()=>{
-            const checkSame = (start,step,result)=>{
+        const checkWin = () => {
+            const checkSame = (start, step, result) => {
                 return result || (spaces[start] === spaces[start + step]
-                     && spaces[start] === spaces[start + 2 * step]
-                     && spaces[start]!=undefined)
-                }
-            let result;
-            for (let i = 0; i<2 ;i++) result = checkSame(i,3,result); // Check verticals
-            for (let i = 0; i<6 ;i+=3) result = checkSame(i,1,result); // Check horizontals
-            result = checkSame(0,4,result); // Check negative diagonal
-            result = checkSame(2,2,result); // Check positive diagonal
-            return result;
+                    && spaces[start] === spaces[start + 2 * step]
+                    && spaces[start] != undefined)
+            }
+            for (let i = 0; i <= 2; i++) if (checkSame(i, 3)) return [i, i + 3, i + 6]; // Check verticals
+            for (let i = 0; i <= 6; i += 3) if (checkSame(i, 1)) return [i, i + 1, i + 2]; // Check horizontals
+            if (checkSame(0, 4)) return [0, 4, 8]; // Check negative diagonal
+            if (checkSame(2, 2)) return [2, 4, 6]; // Check positive diagonal
+            return null;
         }
+        const colorSpace = (() => {
+            const win = (winLine) => {
+                for (let i = 0; i < 3; i++) {
+                    let space = docSpace(winLine[i])
+                    setTimeout(() => space.classList.toggle('win'), i * 250)
+                }}
+            const cantPlace = (spaceIndex)=>{
+                let space = docSpace(spaceIndex);
+                space.classList.toggle('cant-place')
+                setTimeout(()=>space.classList.toggle('cant-place'),300)
+            }
+            return{win,cantPlace}
+        })();
 
-        return {setSpace, checkSpace, listeners, playTurn, checkWin}
+        return { setSpace, checkSpace, listeners, playTurn, checkWin, colorSpace }
 
     })();
 
     var players = [];
 
-    var playTurn = (player,space) => {
+    var playTurn = (player, space) => {
         let attempt = player.makeMove(space.getAttribute('data-space'));
         if (!attempt) return;
 
-        if(gameBoard.checkWin()) {winner(player); return;}
+        let winLine = gameBoard.checkWin()
+        if (winLine) { winner(player, winLine); return; }
 
         nextPlayerIndex = Math.abs(players.indexOf(player) - 1)
         gameBoard.listeners.add(players[nextPlayerIndex])
     };
 
-    const winner = (player) =>{
-        setTimeout(()=> {alert(player.getName() + " WON!")},200);
+    const winner = (player, winLine) => {
+        // setTimeout(()=> {alert(player.getName() + " WON!")},200);
+        gameBoard.colorSpace.win(winLine);
         gameBoard.listeners.clear();
     }
 
-    const playGame = ()=>{
+    const playGame = () => {
 
         // players.push(player(prompt('Player: 1')));
         // players.push(player(prompt('Player: 2')));
-        players.push(player('keff','F'));
+        players.push(player('keff', 'F'));
         a = players[0];
-        players.push(player('awe','Q'));
+        players.push(player('awe', 'Q'));
         b = players[1]
 
         gameBoard.listeners.add(a)
     }
 
-    return{playGame, players, board:gameBoard, player}
+    return { playGame, players, board: gameBoard, player }
 })();
 
 game.playGame();

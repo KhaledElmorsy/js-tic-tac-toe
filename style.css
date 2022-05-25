@@ -40,13 +40,17 @@ main{
     display: grid;
     place-items: center;
 
-    transition-duration: 220ms;
+    transition:all 320ms,
+    background-color 300ms ease-out;
 
     font-size: 80px;
     font-weight: 300;
 
+    cursor: pointer;
+
     color:rgba(255, 255, 255, 0);
     box-shadow: inset 1px 1px 8px rgba(0,0,0,0.3);
+    background-color: rgb(252, 251, 248);
 }
 
 .game-board div.appear{
@@ -59,6 +63,14 @@ main{
 
 .game-board div.appear.player-1{
     color:cadetblue;
+}
+
+.game-board div.win{
+    background-color: rgb(244, 255, 244,1);
+}
+
+.game-board div.cant-place{
+    background-color: rgb(255, 211, 211);
 }
 
 header{
