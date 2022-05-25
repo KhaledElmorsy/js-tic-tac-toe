@@ -19,7 +19,7 @@ const game = (() => {
     });
 
     const gameBoard = (() => {
-        var spaces = Array(9).fill(null);
+        var spaces = [];
         const checkSpace = (spaceIndex) => spaces[spaceIndex];
         const setSpace = (spaceIndex, player)=> {
             spaces[spaceIndex] = player
@@ -35,7 +35,21 @@ const game = (() => {
                 {playTurn(player,space)}})
         }
 
-        return {setSpace, checkSpace, addListeners, playTurn}
+        const checkWin = ()=>{
+            const checkSame = (start,step,result)=>{
+                return result || (spaces[start] === spaces[start + step]
+                     && spaces[start] === spaces[start + 2 * step]
+                     && spaces[start]!=undefined)
+                }
+            let result;
+            for (let i = 0; i<2 ;i++) result = checkSame(i,3,result); // Check verticals
+            for (let i = 0; i<6 ;i+=3) result = checkSame(i,1,result); // Check horizontals
+            result = checkSame(0,4,result); // Check negative diagonal
+            result = checkSame(2,2,result); // Check positive diagonal
+            return result;
+        }
+
+        return {setSpace, checkSpace, addListeners, playTurn, checkWin}
 
     })();
 
@@ -44,6 +58,9 @@ const game = (() => {
     var playTurn = (player,space) => {
         let attempt = player.makeMove(space.getAttribute('data-space'));
         if (!attempt) return;
+
+        if(gameBoard.checkWin()) console.log('You won!');
+
         nextPlayerIndex = Math.abs(players.indexOf(player) - 1)
         gameBoard.addListeners(players[nextPlayerIndex])
     };
