@@ -1,8 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,700;1,100&display=swap');
+
+:root{
+    font-family: 'Roboto';
+    color: cadetblue;
+}
+
+*{
+    border:0;
+    margin:0;
+}
+
+body{
+    height: 100vh;
+
+    display:flex;
+    flex-direction: column;
+}
+
+main{
+    height:100%;
+
+
+    flex-grow: 1;
+    align-items: center;
+
+    background-color:rgb(252, 251, 248);
+}
+
 .game-board {
+    margin-top: 50px;
+
     display: grid;
-    grid-template: repeat(3,70px) / repeat(3, 70px);
+    gap: 10px;
+    grid-template: repeat(3,180px) / repeat(3, 180px);
+    place-content: center;
 }
 
 .game-board div{
-    font-size: 40px;
+    display: grid;
+    place-items: center;
+
+    transition-duration: 220ms;
+
+    font-size: 80px;
+    font-weight: 300;
+
+    color:rgba(255, 255, 255, 0);
+    box-shadow: inset 1px 1px 8px rgba(0,0,0,0.3);
+}
+
+.game-board div.appear{
+    box-shadow: inset 0 0 3px rgba(0,0,0,0.4);
+}
+
+.game-board div.appear.player-2{
+    color:palevioletred;
+}
+
+.game-board div.appear.player-1{
+    color:cadetblue;
+}
+
+header{
+    position:sticky;
+    background-color: white;
+}
+
+header h1{
+    text-align: center;
+    height:100px;
+
+    display: grid;
+    place-items: center;
+
+ 
+    box-shadow: 0 0 7px rgba(0,0,0,0.4);
+
+    font-size: 3rem;
+    font-weight: 100;
 }

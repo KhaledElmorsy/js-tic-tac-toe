@@ -25,8 +25,9 @@ const game = (() => {
             spaces[spaceIndex] = player
             let space = document.querySelector(`[data-space="${spaceIndex}"]`)
             space.innerText = player.getMarker();
+            space.classList.toggle('appear');
+            space.classList.toggle('player-'+(players.indexOf(player)+1))
         }
-
         
         const listeners = (()=>{
             let allSpaces = document.querySelectorAll('.game-board div');
