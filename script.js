@@ -73,7 +73,7 @@ const game = (() => {
             return null;
         }
         const spaceStyle = (() => {
-            const win = (winLine) => {
+            const markWinLine = (winLine) => {
                 for (let i = 0; i < 3; i++) {
                     let space = spaceElement(winLine[i])
                     setTimeout(() => space.classList.toggle('win'), i * 230)
@@ -89,7 +89,7 @@ const game = (() => {
                 space.classList.toggle('cant-place')
                 setTimeout(() => space.classList.toggle('cant-place'), 300)
             }
-            return { win, raiseAll, cantPlace }
+            return { markWinLine, raiseAll, cantPlace }
         })();
         const fullClear = () => {
             spaces = [];
@@ -127,17 +127,16 @@ const game = (() => {
         gameBoard.listeners.add(players[nextPlayerIndex])
     }
 
-     const gameResult = (player) => {
-        if (gameBoard.getTotalTurns() === 9) victoryScreen.show(player,true);
-        
+     const gameResult = (player) => { 
         let winLine = gameBoard.checkWin()
-        if (winLine) winner(player, winLine)
+        if (winLine) return winner(player, winLine)
 
-        return (winLine || gameBoard.getTotalTurns() === 9)
+        let tieState = (gameBoard.getTotalTurns()===9)
+        if (tieState) return victoryScreen.show(player,true);
      }
 
     const winner = (player, winLine) => {
-        gameBoard.spaceStyle.win(winLine)
+        gameBoard.spaceStyle.markWinLine(winLine)
         gameBoard.spaceStyle.raiseAll();
         gameBoard.listeners.clear();
         setTimeout(() => victoryScreen.show(player,false), 900)
@@ -146,11 +145,13 @@ const game = (() => {
     const victoryScreen = (() => {
         let victory = document.querySelector('.victory')
         let winner = victory.querySelector('#winner')
+
         const show = (player, tie) => {
-            if (!tie) winner.innerText = player.getName() + " wins!";
-            else winner.innerText = "It's a tie";
+            if (tie) winner.innerText = "It's a tie";
+            else winner.innerText = player.getName() + " wins!";
+            
             victory.setAttribute('data-winner', `player-${players.indexOf(player) + 1}`);
-            setTimeout(()=>victory.classList.remove('hidden'),400);
+            victory.classList.remove('hidden');
         }
         const hide = () => victory.classList.add('hidden');
         
