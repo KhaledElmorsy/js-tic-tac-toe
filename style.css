@@ -124,13 +124,13 @@ header h1{
     font-weight: 100;
 }
 
-input[id="player1"]{
+input#player1{
     grid-area: player1;
 
     color: cadetblue;
 }
 
-input[id="player2"]{
+input#player2{
     grid-area: player2;
 
     color: palevioletred;
@@ -141,26 +141,26 @@ input[id="player2"]{
     display: flex;
     border-radius: 5px;
     overflow: hidden;
-    box-shadow: 0 0 2px rgba(0,0,0,0.3);
-
+    border: 0.25px rgba(0, 0, 0, 0.1) solid;
 }
 
 .settings div{
     height: 30px;
     width:75px;
+    font-size: 0.95rem;
     
     display: grid;
     place-items: center;
 
     transition: all 150ms ease-out;
 
-
-    box-shadow: inset 1px 1px 3px rgba(0,0,0,0)
-    ,0 -1px 3px rgba(0,0,0,0.3);
+    box-shadow: inset 1px 1px 3px rgba(0,0,0,0.3)
+    ,0 -1px 3px rgba(0, 0, 0, 0);
 }
 
 .settings div.selected{
-    box-shadow: inset 1px 1px 3px rgba(0,0,0,0.3)
-    ,0 -1px 3px rgba(0, 0, 0, 0);
+    font-size: 1rem;
 
+    box-shadow: inset 1px 1px 3px rgba(0,0,0,0)
+    ,0 -1px 3px rgba(0,0,0,0.2);
 }

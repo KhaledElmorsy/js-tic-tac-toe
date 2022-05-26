@@ -60,13 +60,14 @@ const game = (() => {
                 for (let i = 0; i < 3; i++) {
                     let space = docSpace(winLine[i])
                     setTimeout(() => space.classList.toggle('win'), i * 250)
-                }}
-            const cantPlace = (spaceIndex)=>{
+                }
+            }
+            const cantPlace = (spaceIndex) => {
                 let space = docSpace(spaceIndex);
                 space.classList.toggle('cant-place')
-                setTimeout(()=>space.classList.toggle('cant-place'),300)
+                setTimeout(() => space.classList.toggle('cant-place'), 300)
             }
-            return{win,cantPlace}
+            return { win, cantPlace }
         })();
 
         return { setSpace, checkSpace, listeners, playTurn, checkWin, colorSpace }
@@ -82,7 +83,7 @@ const game = (() => {
         let winLine = gameBoard.checkWin()
         if (winLine) { winner(player, winLine); return; }
 
-        nextPlayerIndex = Math.abs(players.indexOf(player) - 1)
+        nextPlayerIndex = (players.indexOf(player) === 1) ? 0 : 1;
         gameBoard.listeners.add(players[nextPlayerIndex])
     };
 
@@ -92,16 +93,40 @@ const game = (() => {
         gameBoard.listeners.clear();
     }
 
+    const UI = (() => {
+        let palyerInputs = document.querySelectorAll('input');
+        let settings = document.querySelectorAll('.settings div')
+
+        const initialize = () => {
+            palyerInputs.forEach((input) => input.addEventListener('input', setPlayerName))
+            settings.forEach((button) => { button.onclick = setButton })
+        }
+        const setButton = (e) => {
+            settings.forEach((button)=>{
+                if (button.innerText === e.target.innerText)
+                    button.classList.add('selected')
+                else button.classList.remove('selected')
+            })
+        }
+        const setPlayerName = (e) => {
+            let index = e.target.getAttribute('data-player-index');
+            players[index].setName(e.target.value)
+        }
+        return {initialize}
+    })();
+
     const playGame = () => {
 
         // players.push(player(prompt('Player: 1')));
         // players.push(player(prompt('Player: 2')));
-        players.push(player('keff', 'F'));
-        a = players[0];
-        players.push(player('awe', 'Q'));
-        b = players[1]
+        players.push(player('Player 1', 'X'));
+        player1 = players[0]
+        players.push(player('Player 2', 'O'));
+        player2 = players[1]
 
-        gameBoard.listeners.add(a)
+        UI.initialize()
+
+        gameBoard.listeners.add(player1)
     }
 
     return { playGame, players, board: gameBoard, player }
