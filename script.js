@@ -17,7 +17,21 @@ const game = (() => {
                 return false;
             }
         }
-        return { setName, getName, setMarker, makeMove, getMarker }
+        const computerMove = function(){
+            // Random Move
+            if ( type === 'Easy') {
+                let legalMove = false;
+                let move;
+                while(!legalMove){
+                    move = Math.floor(Math.random()*9);
+                    legalMove = !gameBoard.checkSpace(move)
+                }
+                return move;
+            }
+            // Minmax Move
+        }
+
+        return { setName, getName, setMarker, getType, setType, makeMove, getMarker, computerMove }
     });
 
     const gameBoard = (() => {
@@ -94,17 +108,33 @@ const game = (() => {
     var players = [];
 
     var playTurn = (player, space) => {
-        let attempt = player.makeMove(space.getAttribute('data-space'));
+
+        let spaceIndex = space.getAttribute('data-space');
+        let attempt = player.makeMove(spaceIndex);
         if (!attempt) return;
 
-        if (gameBoard.getTotalTurns() === 9) victoryScreen.show(player,true);
+        let gameOver = gameResult(player);
 
-        let winLine = gameBoard.checkWin()
-        if (winLine) { winner(player, winLine); return; }
-
-        nextPlayerIndex = (players.indexOf(player) === 1) ? 0 : 1;
+        if (players[1].getType() != 'Human' && !gameOver){
+            let move = players[1].computerMove();
+            players[1].makeMove(move);
+            gameResult(players[1]);
+            nextPlayerIndex = 0;
+        } else {
+            nextPlayerIndex = (players.indexOf(player) === 1) ? 0 : 1;
+        }
+        
         gameBoard.listeners.add(players[nextPlayerIndex])
-    };
+    }
+
+     const gameResult = (player) => {
+        if (gameBoard.getTotalTurns() === 9) victoryScreen.show(player,true);
+        
+        let winLine = gameBoard.checkWin()
+        if (winLine) winner(player, winLine)
+
+        return (winLine || gameBoard.getTotalTurns() === 9)
+     }
 
     const winner = (player, winLine) => {
         gameBoard.spaceStyle.win(winLine)
@@ -139,11 +169,12 @@ const game = (() => {
         const setSetting = (e) => {
             let chosenSetting = e.target.innerText;
             settings.forEach((button) => {
-                if (button.innerText === chosenSetting)
+                if (button.innerText === chosenSetting){
                     button.classList.add('selected')
-                else button.classList.remove('selected')
+                } else button.classList.remove('selected')
             })
             players[1].setType(chosenSetting);
+            restartGame();
         }
         const setPlayerName = (e) => {
             let index = e.target.getAttribute('data-player-index');
@@ -161,6 +192,7 @@ const game = (() => {
     const playGame = () => {
         players.push(player('Player 1', 'X'));
         players.push(player('Player 2', 'O'));
+        players[1].setType('Human') // Default
 
         UI.initialize()
         gameBoard.listeners.add(players[0])
