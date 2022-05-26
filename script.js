@@ -12,7 +12,7 @@ const game = (() => {
                 gameBoard.setSpace(spaceIndex, this);
                 return true;
             } else {
-                gameBoard.colorSpace.cantPlace(spaceIndex);
+                gameBoard.spaceStyle.cantPlace(spaceIndex);
                 return false;
             }
         }
@@ -21,6 +21,8 @@ const game = (() => {
 
     const gameBoard = (() => {
         var spaces = [];
+        let allSpaces = document.querySelectorAll('.game-board div');
+
         const docSpace = (spaceIndex) => document.querySelector(`[data-space="${spaceIndex}"]`);
         const checkSpace = (spaceIndex) => spaces[spaceIndex];
         const setSpace = (spaceIndex, player) => {
@@ -32,7 +34,6 @@ const game = (() => {
         }
 
         const listeners = (() => {
-            let allSpaces = document.querySelectorAll('.game-board div');
             const add = (player) => {
                 allSpaces.forEach((space) => {
                     space.onclick = () => { playTurn(player, space) }
@@ -55,7 +56,7 @@ const game = (() => {
             if (checkSame(2, 2)) return [2, 4, 6]; // Check positive diagonal
             return null;
         }
-        const colorSpace = (() => {
+        const spaceStyle = (() => {
             const win = (winLine) => {
                 for (let i = 0; i < 3; i++) {
                     let space = docSpace(winLine[i])
@@ -74,8 +75,16 @@ const game = (() => {
             }
             return { win, raiseAll, cantPlace }
         })();
+        const fullClear = () => {
+            spaces = [];
+            listeners.clear();
+            allSpaces.forEach((space) => {
+                space.innerText = "";
+                space.classList.remove('win', 'appear', 'player-1', 'player-2')
+            })
+        }
 
-        return { setSpace, checkSpace, listeners, playTurn, checkWin, colorSpace }
+        return { setSpace, checkSpace, listeners, playTurn, checkWin, spaceStyle, fullClear }
 
     })();
 
@@ -93,18 +102,24 @@ const game = (() => {
     };
 
     const winner = (player, winLine) => {
-        gameBoard.colorSpace.win(winLine)
-        gameBoard.colorSpace.raiseAll();
+        gameBoard.spaceStyle.win(winLine)
+        gameBoard.spaceStyle.raiseAll();
         gameBoard.listeners.clear();
-        setTimeout(()=>victoryScreen(player),900)
+        setTimeout(() => victoryScreen.show(player), 900)
     }
 
-    const victoryScreen = (player)=>{
+    const victoryScreen = (() => {
         let victory = document.querySelector('.victory')
-        victory.querySelector('#winner').innerText = player.getName() + " wins!";
-        victory.setAttribute('data-winner', `player-${players.indexOf(player)+1}`);
-        victory.classList.remove('hidden')
-    }
+        let winner = victory.querySelector('#winner')
+        const show = (player) => {
+            winner.innerText = player.getName() + " wins!";
+            victory.setAttribute('data-winner', `player-${players.indexOf(player) + 1}`);
+            victory.classList.remove('hidden')
+        }
+        const hide = () => victory.classList.add('hidden');
+        
+        return {show, hide}
+    })();
 
     // Manage non-gameboard interactive elements
     const UI = (() => {
@@ -113,6 +128,7 @@ const game = (() => {
         const initialize = () => {
             palyerNameInput.forEach((input) => input.addEventListener('input', setPlayerName))
             settings.forEach((button) => { button.onclick = setSetting })
+            document.querySelector('#play-again').onclick = restartGame;
         }
         const setSetting = (e) => {
             settings.forEach((button) => {
@@ -127,6 +143,12 @@ const game = (() => {
         }
         return { initialize }
     })();
+
+    const restartGame = () => {
+        gameBoard.fullClear();
+        gameBoard.listeners.add(player1);
+        victoryScreen.hide();
+    }
 
     const playGame = () => {
 
