@@ -151,16 +151,12 @@ const game = (() => {
     }
 
     const playGame = () => {
-
-        // players.push(player(prompt('Player: 1')));
-        // players.push(player(prompt('Player: 2')));
         players.push(player('Player 1', 'X'));
-        player1 = players[0]
         players.push(player('Player 2', 'O'));
+        player1 = players[0]
         player2 = players[1]
 
         UI.initialize()
-
         gameBoard.listeners.add(player1)
     }
 
