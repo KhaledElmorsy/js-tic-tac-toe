@@ -18,8 +18,7 @@ const game = (() => {
             }
         }
         const computerMove = function(){
-            // Random Move
-            if ( type === 'Easy') {
+            const randomMove = ()=>{
                 let legalMove = false;
                 let move;
                 while(!legalMove){
@@ -29,6 +28,12 @@ const game = (() => {
                 return move;
             }
             // Minmax Move
+            const minmaxMove = ()=>{
+
+            }
+
+            if (type==='Easy') return randomMove();
+            else return minmaxMove();
         }
 
         return { setName, getName, setMarker, getType, setType, makeMove, getMarker, computerMove }
