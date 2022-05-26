@@ -28,7 +28,7 @@ main{
 }
 
 .game-board {
-    margin-top: 50px;
+    margin-top: 30px;
 
     display: grid;
     gap: 10px;
@@ -91,4 +91,76 @@ header h1{
 
     font-size: 3rem;
     font-weight: 100;
+}
+
+.players{
+    padding-top: 25px;
+    padding-left: 10%;
+    padding-right: 10%;
+
+    display: grid;
+    grid-template: 90px 50px / 1fr 1fr;
+    grid-template-areas: "player1 player2"
+                         ". settings";
+    place-items: center;
+}
+
+.players input{
+    appearance: none;
+    width: clamp(220px, 80%,350px);
+    height: 80px;
+
+    font-family: 'Roboto', Helvetica, sans-serif;
+    font-size: 2rem;
+    font-weight: 300;
+    text-align: center;
+
+    border-radius: 5px;
+    box-shadow: inset 1px 1px 5px rgba(0,0,0,0.4);
+}
+
+.players input::placeholder{
+    color:rgb(183, 183, 183);
+    font-weight: 100;
+}
+
+input[id="player1"]{
+    grid-area: player1;
+
+    color: cadetblue;
+}
+
+input[id="player2"]{
+    grid-area: player2;
+
+    color: palevioletred;
+}
+
+.settings {
+    grid-area: settings;
+    display: flex;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 0 2px rgba(0,0,0,0.3);
+
+}
+
+.settings div{
+    height: 30px;
+    width:75px;
+    
+    display: grid;
+    place-items: center;
+
+    transition: all 150ms ease-out;
+
+
+    box-shadow: inset 1px 1px 3px rgba(0,0,0,0)
+    ,0 -1px 3px rgba(0,0,0,0.3);
+}
+
+.settings div.selected{
+    box-shadow: inset 1px 1px 3px rgba(0,0,0,0.3)
+    ,0 -1px 3px rgba(0, 0, 0, 0);
+
 }
