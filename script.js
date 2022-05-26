@@ -23,11 +23,12 @@ const game = (() => {
         var spaces = [];
         let allSpaces = document.querySelectorAll('.game-board div');
 
-        const docSpace = (spaceIndex) => document.querySelector(`[data-space="${spaceIndex}"]`);
+        const getTotalTurns = ()=> spaces.filter((space)=>space).length;
+        const spaceElement = (spaceIndex) => document.querySelector(`[data-space="${spaceIndex}"]`);
         const checkSpace = (spaceIndex) => spaces[spaceIndex];
         const setSpace = (spaceIndex, player) => {
             spaces[spaceIndex] = player
-            let space = docSpace(spaceIndex)
+            let space = spaceElement(spaceIndex)
             space.innerText = player.getMarker();
             space.classList.toggle('appear');
             space.classList.toggle('player-' + (players.indexOf(player) + 1))
@@ -59,17 +60,17 @@ const game = (() => {
         const spaceStyle = (() => {
             const win = (winLine) => {
                 for (let i = 0; i < 3; i++) {
-                    let space = docSpace(winLine[i])
+                    let space = spaceElement(winLine[i])
                     setTimeout(() => space.classList.toggle('win'), i * 230)
                 }
             }
             const raiseAll = () => {
                 setTimeout(() => {
-                    for (let i = 0; i < 9; i++) docSpace(i).classList.add('appear')
+                    for (let i = 0; i < 9; i++) spaceElement(i).classList.add('appear')
                 }, 800)
             }
             const cantPlace = (spaceIndex) => {
-                let space = docSpace(spaceIndex);
+                let space = spaceElement(spaceIndex);
                 space.classList.toggle('cant-place')
                 setTimeout(() => space.classList.toggle('cant-place'), 300)
             }
@@ -84,7 +85,8 @@ const game = (() => {
             })
         }
 
-        return { setSpace, checkSpace, listeners, playTurn, checkWin, spaceStyle, fullClear }
+        return { setSpace, checkSpace, listeners, playTurn, checkWin
+                , spaceStyle, fullClear, getTotalTurns }
 
     })();
 
@@ -93,6 +95,8 @@ const game = (() => {
     var playTurn = (player, space) => {
         let attempt = player.makeMove(space.getAttribute('data-space'));
         if (!attempt) return;
+
+        if (gameBoard.getTotalTurns() === 9) victoryScreen.show(player,true);
 
         let winLine = gameBoard.checkWin()
         if (winLine) { winner(player, winLine); return; }
@@ -105,16 +109,17 @@ const game = (() => {
         gameBoard.spaceStyle.win(winLine)
         gameBoard.spaceStyle.raiseAll();
         gameBoard.listeners.clear();
-        setTimeout(() => victoryScreen.show(player), 900)
+        setTimeout(() => victoryScreen.show(player,false), 900)
     }
 
     const victoryScreen = (() => {
         let victory = document.querySelector('.victory')
         let winner = victory.querySelector('#winner')
-        const show = (player) => {
-            winner.innerText = player.getName() + " wins!";
+        const show = (player, tie) => {
+            if (!tie) winner.innerText = player.getName() + " wins!";
+            else winner.innerText = "It's a tie";
             victory.setAttribute('data-winner', `player-${players.indexOf(player) + 1}`);
-            victory.classList.remove('hidden')
+            setTimeout(()=>victory.classList.remove('hidden'),400);
         }
         const hide = () => victory.classList.add('hidden');
         
