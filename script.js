@@ -44,8 +44,8 @@ const game = (() => {
         })();
 
         const checkWin = () => {
-            const checkSame = (start, step, result) => {
-                return result || (spaces[start] === spaces[start + step]
+            const checkSame = (start, step) => {
+                return (spaces[start] === spaces[start + step]
                     && spaces[start] === spaces[start + 2 * step]
                     && spaces[start] != undefined)
             }
@@ -59,15 +59,20 @@ const game = (() => {
             const win = (winLine) => {
                 for (let i = 0; i < 3; i++) {
                     let space = docSpace(winLine[i])
-                    setTimeout(() => space.classList.toggle('win'), i * 250)
+                    setTimeout(() => space.classList.toggle('win'), i * 230)
                 }
+            }
+            const raiseAll = () => {
+                setTimeout(() => {
+                    for (let i = 0; i < 9; i++) docSpace(i).classList.add('appear')
+                }, 800)
             }
             const cantPlace = (spaceIndex) => {
                 let space = docSpace(spaceIndex);
                 space.classList.toggle('cant-place')
                 setTimeout(() => space.classList.toggle('cant-place'), 300)
             }
-            return { win, cantPlace }
+            return { win, raiseAll, cantPlace }
         })();
 
         return { setSpace, checkSpace, listeners, playTurn, checkWin, colorSpace }
@@ -89,7 +94,8 @@ const game = (() => {
 
     const winner = (player, winLine) => {
         // setTimeout(()=> {alert(player.getName() + " WON!")},200);
-        gameBoard.colorSpace.win(winLine);
+        gameBoard.colorSpace.win(winLine)
+        gameBoard.colorSpace.raiseAll();
         gameBoard.listeners.clear();
     }
 
@@ -99,10 +105,10 @@ const game = (() => {
 
         const initialize = () => {
             palyerInputs.forEach((input) => input.addEventListener('input', setPlayerName))
-            settings.forEach((button) => { button.onclick = setButton })
+            settings.forEach((button) => { button.onclick = setSetting })
         }
-        const setButton = (e) => {
-            settings.forEach((button)=>{
+        const setSetting = (e) => {
+            settings.forEach((button) => {
                 if (button.innerText === e.target.innerText)
                     button.classList.add('selected')
                 else button.classList.remove('selected')
@@ -112,7 +118,7 @@ const game = (() => {
             let index = e.target.getAttribute('data-player-index');
             players[index].setName(e.target.value)
         }
-        return {initialize}
+        return { initialize }
     })();
 
     const playGame = () => {
