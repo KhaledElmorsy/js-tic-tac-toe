@@ -164,3 +164,83 @@ input#player2{
     box-shadow: inset 1px 1px 3px rgba(0,0,0,0)
     ,0 -1px 3px rgba(0,0,0,0.2);
 }
+
+.victory{
+    position: absolute;
+    left:0;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+
+    display: grid;
+    place-items: center;
+
+    transition: 1000ms ease-in-out;
+
+    backdrop-filter: blur(3px);
+    background-color: rgba(0,0,0,0.1);
+}
+
+.victory.hidden{
+    display: none;
+    opacity: 0;
+}
+
+.victory .message{
+    height: 300px;
+    width: 550px;
+
+    display: grid;
+    grid-template-rows: 5fr 4fr;
+    place-items: center;
+
+    font-family: 'Roboto', Helvetica, sans-serif;
+    border-radius: 10px;
+    font-weight: 100;
+
+    transition: all 1.2s ease-in-out;
+    transition-delay: 1500ms;
+
+    box-shadow: 1px 1px 15px rgba(0,0,0,0.3);
+    background-color: rgb(252, 251, 248);
+}
+
+.victory.hidden .message{
+    opacity: 0;
+    transform: translateY(100px);
+}
+
+.victory #play-again{
+    height: 80px;
+    width: 200px;
+    margin-bottom: 30px;
+
+    display: grid;
+    place-items: center;
+
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+
+    font-size: 2rem;
+    border-radius: 10px;
+    box-shadow: inset 1px 1px 6px rgba(0,0,0,0.3);
+}
+
+.victory #play-again:hover{
+    font-size: 2.05rem;
+    box-shadow: inset 0px 0px 3px rgba(0,0,0,0.3);
+}
+
+.victory .message h2{
+    font-family: 'Roboto', Helvetica, sans-serif;
+    font-size: 4rem;
+    font-weight: 300;
+}
+
+.victory.player-1 .message{
+    color: cadetblue;
+}
+
+.victory.player-2 .message{
+    color: palevioletred;
+}
