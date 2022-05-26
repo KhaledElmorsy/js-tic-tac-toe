@@ -1,11 +1,12 @@
 const game = (() => {
 
-    const player = ((name, marker) => {
+    const player = ((name, marker, type) => {
         const setName = (a) => { name = a };
         const getName = () => name;
-
         const setMarker = (m) => { marker = m };
         const getMarker = () => marker;
+        const getType = () => type;
+        const setType = (t) => { type = t };
 
         const makeMove = function (spaceIndex) {
             if (!gameBoard.checkSpace(spaceIndex)) {
@@ -136,11 +137,13 @@ const game = (() => {
             document.querySelector('#play-again').onclick = restartGame;
         }
         const setSetting = (e) => {
+            let chosenSetting = e.target.innerText;
             settings.forEach((button) => {
-                if (button.innerText === e.target.innerText)
+                if (button.innerText === chosenSetting)
                     button.classList.add('selected')
                 else button.classList.remove('selected')
             })
+            players[1].setType(chosenSetting);
         }
         const setPlayerName = (e) => {
             let index = e.target.getAttribute('data-player-index');
@@ -151,18 +154,16 @@ const game = (() => {
 
     const restartGame = () => {
         gameBoard.fullClear();
-        gameBoard.listeners.add(player1);
+        gameBoard.listeners.add(players[0]);
         victoryScreen.hide();
     }
 
     const playGame = () => {
         players.push(player('Player 1', 'X'));
         players.push(player('Player 2', 'O'));
-        player1 = players[0]
-        player2 = players[1]
 
         UI.initialize()
-        gameBoard.listeners.add(player1)
+        gameBoard.listeners.add(players[0])
     }
 
     return { playGame, players, board: gameBoard, player }
