@@ -93,18 +93,25 @@ const game = (() => {
     };
 
     const winner = (player, winLine) => {
-        // setTimeout(()=> {alert(player.getName() + " WON!")},200);
         gameBoard.colorSpace.win(winLine)
         gameBoard.colorSpace.raiseAll();
         gameBoard.listeners.clear();
+        setTimeout(()=>victoryScreen(player),900)
     }
 
-    const UI = (() => {
-        let palyerInputs = document.querySelectorAll('input');
-        let settings = document.querySelectorAll('.settings div')
+    const victoryScreen = (player)=>{
+        let victory = document.querySelector('.victory')
+        victory.querySelector('#winner').innerText = player.getName() + " wins!";
+        victory.setAttribute('data-winner', `player-${players.indexOf(player)+1}`);
+        victory.classList.remove('hidden')
+    }
 
+    // Manage non-gameboard interactive elements
+    const UI = (() => {
+        let palyerNameInput = document.querySelectorAll('input');
+        let settings = document.querySelectorAll('.settings div')
         const initialize = () => {
-            palyerInputs.forEach((input) => input.addEventListener('input', setPlayerName))
+            palyerNameInput.forEach((input) => input.addEventListener('input', setPlayerName))
             settings.forEach((button) => { button.onclick = setSetting })
         }
         const setSetting = (e) => {

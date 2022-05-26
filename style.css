@@ -175,14 +175,14 @@ input#player2{
     display: grid;
     place-items: center;
 
-    transition: 1000ms ease-in-out;
+    transition: 0.5s ease-in-out;
 
     backdrop-filter: blur(3px);
     background-color: rgba(0,0,0,0.1);
 }
 
 .victory.hidden{
-    display: none;
+    visibility: hidden;
     opacity: 0;
 }
 
@@ -198,8 +198,8 @@ input#player2{
     border-radius: 10px;
     font-weight: 100;
 
-    transition: all 1.2s ease-in-out;
-    transition-delay: 1500ms;
+    transition: all 0.5s ease-out;
+    transition-delay: 400ms;
 
     box-shadow: 1px 1px 15px rgba(0,0,0,0.3);
     background-color: rgb(252, 251, 248);
@@ -237,10 +237,10 @@ input#player2{
     font-weight: 300;
 }
 
-.victory.player-1 .message{
+.victory[data-winner="player-1"] .message{
     color: cadetblue;
 }
 
-.victory.player-2 .message{
+.victory[data-winner="player-2"] .message{
     color: palevioletred;
 }
