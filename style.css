@@ -45,6 +45,7 @@ main{
 
     font-size: 80px;
     font-weight: 300;
+    user-select: none;
 
     cursor: pointer;
 
@@ -66,7 +67,7 @@ main{
 }
 
 .game-board div.win{
-    background-color: rgb(244, 255, 244,1);
+    background-color: rgb(236, 249, 236);
 }
 
 .game-board div.cant-place{
