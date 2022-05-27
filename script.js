@@ -3,7 +3,6 @@ const game = (() => {
     const player = ((name, marker, type) => {
         const setName = (a) => { name = a };
         const getName = () => name;
-        const setMarker = (m) => { marker = m };
         const getMarker = () => marker;
         const getType = () => type;
         const setType = (t) => { type = t };
@@ -35,7 +34,7 @@ const game = (() => {
             else return minmaxMove();
         }
 
-        return { setName, getName, setMarker, getType, setType, makeMove, getMarker, computerMove }
+        return { setName, getName, getType, setType, makeMove, getMarker, computerMove }
     });
 
     const gameBoard = (() => {
@@ -52,7 +51,6 @@ const game = (() => {
             space.classList.toggle('appear');
             space.classList.toggle('player-' + (players.indexOf(player) + 1))
         }
-
         const listeners = (() => {
             const add = (player) => {
                 allSpaces.forEach((space) => {
