@@ -20,7 +20,6 @@ const game = (() => {
         const computerMove = function(){
             const randomMove = ()=>{
                 let legalMove = false;
-                let move;
                 while(!legalMove){
                     move = Math.floor(Math.random()*9);
                     legalMove = !gameBoard.checkSpace(move)
