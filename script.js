@@ -122,7 +122,7 @@ const game = (() => {
         if (players[1].getType() != 'Human' && !gameOver){
             let move = players[1].computerMove();
             players[1].makeMove(move);
-            gameResult(players[1]);
+            gameOver = gameResult(players[1]);
             nextPlayerIndex = 0;
         } else {
             nextPlayerIndex = (players.indexOf(player) === 1) ? 0 : 1;
