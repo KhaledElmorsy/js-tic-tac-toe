@@ -113,11 +113,10 @@ const game = (() => {
     var players = [];
 
     var playTurn = (player, space) => {
-
         let spaceIndex = space.getAttribute('data-space');
         let attempt = player.makeMove(spaceIndex);
         if (!attempt) return;
-
+        
         let gameOver = gameResult(player);
 
         if (players[1].getType() != 'Human' && !gameOver){
@@ -129,21 +128,25 @@ const game = (() => {
             nextPlayerIndex = (players.indexOf(player) === 1) ? 0 : 1;
         }
         
-        gameBoard.listeners.add(players[nextPlayerIndex])
+        if (!gameOver) gameBoard.listeners.add(players[nextPlayerIndex])
     }
 
      const gameResult = (player) => { 
         let winLine = gameBoard.checkWin()
-        if (winLine) return winner(player, winLine)
+        if (winLine) winner(player, winLine);
 
         let tieState = (gameBoard.getTotalTurns()===9)
-        if (tieState) return victoryScreen.show(player,true);
+        if (tieState) victoryScreen.show(player,true);
+
+        if (winLine || tieState){
+            gameBoard.listeners.clear();
+            return true;
+        }
      }
 
     const winner = (player, winLine) => {
-        gameBoard.spaceStyle.markWinLine(winLine)
+        gameBoard.spaceStyle.markWinLine(winLine);
         gameBoard.spaceStyle.raiseAll();
-        gameBoard.listeners.clear();
         setTimeout(() => victoryScreen.show(player,false), 900)
     }
 
