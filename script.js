@@ -136,7 +136,7 @@ const game = (() => {
         if (winLine) winner(player, winLine);
 
         let tieState = (gameBoard.getTotalTurns()===9)
-        if (tieState) victoryScreen.show(player,true);
+        if (tieState && !winLine) victoryScreen.show(player,true);
 
         if (winLine || tieState){
             gameBoard.listeners.clear();
