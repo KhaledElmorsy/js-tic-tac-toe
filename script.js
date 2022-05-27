@@ -38,7 +38,7 @@ const game = (() => {
     });
 
     const gameBoard = (() => {
-        var spaces = [];
+        var spaces = Array.prototype.fill(null,9);
         let allSpaces = document.querySelectorAll('.game-board div');
 
         const getTotalTurns = ()=> spaces.filter((space)=>space).length;
@@ -61,8 +61,8 @@ const game = (() => {
 
             return { add, clear }
         })();
-
-        const checkWin = () => {
+        const simpleCopyBoard = ()=> spaces.map((space)=>space.getMarker()||null) 
+        const checkWin = (board = spaces) => {
             const checkSame = (start, step) => {
                 return (spaces[start] === spaces[start + step]
                     && spaces[start] === spaces[start + 2 * step]
