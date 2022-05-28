@@ -16,21 +16,35 @@ const game = (() => {
                 return false;
             }
         }
-        const computerMove = function(){
-            const randomMove = ()=>{
-                let legalMove = false;
-                while(!legalMove){
-                    move = Math.floor(Math.random()*9);
-                    legalMove = !gameBoard.checkSpace(move)
-                }
-                return move;
-            }
+        const computerMove = function () {
+            let board = gameBoard.simpleCopyBoard();
+            const possibleMoves = ((board) => board.reduce((moves, space, i) => (
+                (!space) ? moves.concat(i) : moves), []))
+            let allMoves = possibleMoves(board);
+
+            const randomMove = () => allMoves[Math.floor(Math.random()*allMoves.length)];
+
             // Minmax Move
-            const minmaxMove = ()=>{
+            const minmaxMove = (move = null) => {
+                    // Copy Game Board State
 
+                    // Get possible moves
+
+                    // Iterate through moves
+                    // let currentMove = allMoves.pop();
+                    // Make move as Player
+                    // Check if move wins
+
+                    // If yes, return score
+
+                    // Compare score with current best (minmax)
+
+                    // If score beats it, replace current best move
+
+                    // If not, repeat but for next player and with negative score
             }
 
-            if (type==='Easy') return randomMove();
+            if (type === 'Easy') return randomMove();
             else return minmaxMove();
         }
 
@@ -38,10 +52,9 @@ const game = (() => {
     });
 
     const gameBoard = (() => {
-        var spaces = Array.prototype.fill(null,9);
+        var spaces = Array(9).fill(null);
         let allSpaces = document.querySelectorAll('.game-board div');
-
-        const getTotalTurns = ()=> spaces.filter((space)=>space).length;
+        const getTotalTurns = () => spaces.filter((space) => space).length;
         const spaceElement = (spaceIndex) => document.querySelector(`[data-space="${spaceIndex}"]`);
         const checkSpace = (spaceIndex) => spaces[spaceIndex];
         const setSpace = (spaceIndex, player) => {
@@ -61,12 +74,12 @@ const game = (() => {
 
             return { add, clear }
         })();
-        const simpleCopyBoard = ()=> spaces.map((space)=>space.getMarker()||null) 
+        const simpleCopyBoard = () => spaces.map((space) => (space) ? space.getMarker() : null)
         const checkWin = (board = spaces) => {
             const checkSame = (start, step) => {
-                return (spaces[start] === spaces[start + step]
-                    && spaces[start] === spaces[start + 2 * step]
-                    && spaces[start] != undefined)
+                return (board[start] === board[start + step]
+                    && board[start] === board[start + 2 * step]
+                    && board[start] != undefined)
             }
             for (let i = 0; i <= 2; i++) if (checkSame(i, 3)) return [i, i + 3, i + 6]; // Check verticals
             for (let i = 0; i <= 6; i += 3) if (checkSame(i, 1)) return [i, i + 1, i + 2]; // Check horizontals
@@ -94,7 +107,7 @@ const game = (() => {
             return { markWinLine, raiseAll, cantPlace }
         })();
         const fullClear = () => {
-            spaces = [];
+            spaces = Array(9).fill(null);
             listeners.clear();
             allSpaces.forEach((space) => {
                 space.innerText = "";
@@ -102,8 +115,11 @@ const game = (() => {
             })
         }
 
-        return { setSpace, checkSpace, listeners, playTurn, checkWin
-                , spaceStyle, fullClear, getTotalTurns }
+        return {
+            setSpace, checkSpace, listeners,
+            checkWin, spaceStyle, fullClear,
+            getTotalTurns, simpleCopyBoard
+        }
 
     })();
 
@@ -113,10 +129,10 @@ const game = (() => {
         let spaceIndex = space.getAttribute('data-space');
         let attempt = player.makeMove(spaceIndex);
         if (!attempt) return;
-        
+
         let gameOver = gameResult(player);
 
-        if (players[1].getType() != 'Human' && !gameOver){
+        if (players[1].getType() != 'Human' && !gameOver) {
             let move = players[1].computerMove();
             players[1].makeMove(move);
             gameOver = gameResult(players[1]);
@@ -124,27 +140,27 @@ const game = (() => {
         } else {
             nextPlayerIndex = (players.indexOf(player) === 1) ? 0 : 1;
         }
-        
+
         if (!gameOver) gameBoard.listeners.add(players[nextPlayerIndex])
     }
 
-     const gameResult = (player) => { 
+    const gameResult = (player) => {
         let winLine = gameBoard.checkWin()
         if (winLine) winner(player, winLine);
 
-        let tieState = (gameBoard.getTotalTurns()===9)
-        if (tieState && !winLine) victoryScreen.show(player,true);
+        let tieState = (gameBoard.getTotalTurns() === 9)
+        if (tieState && !winLine) victoryScreen.show(player, true);
 
-        if (winLine || tieState){
+        if (winLine || tieState) {
             gameBoard.listeners.clear();
             return true;
         }
-     }
+    }
 
     const winner = (player, winLine) => {
         gameBoard.spaceStyle.markWinLine(winLine);
         gameBoard.spaceStyle.raiseAll();
-        setTimeout(() => victoryScreen.show(player,false), 900)
+        setTimeout(() => victoryScreen.show(player, false), 900)
     }
 
     const victoryScreen = (() => {
@@ -154,13 +170,13 @@ const game = (() => {
         const show = (player, tie) => {
             if (tie) winner.innerText = "It's a tie";
             else winner.innerText = player.getName() + " wins!";
-            
+
             victory.setAttribute('data-winner', `player-${players.indexOf(player) + 1}`);
             victory.classList.remove('hidden');
         }
         const hide = () => victory.classList.add('hidden');
-        
-        return {show, hide}
+
+        return { show, hide }
     })();
 
     // Manage non-gameboard interactive elements
@@ -175,7 +191,7 @@ const game = (() => {
         const setSetting = (e) => {
             let chosenSetting = e.target.innerText;
             settings.forEach((button) => {
-                if (button.innerText === chosenSetting){
+                if (button.innerText === chosenSetting) {
                     button.classList.add('selected')
                 } else button.classList.remove('selected')
             })
