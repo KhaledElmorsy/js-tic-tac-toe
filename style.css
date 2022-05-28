@@ -115,6 +115,9 @@ header h1{
     font-size: 2rem;
     font-weight: 300;
     text-align: center;
+    outline: 0px #ececec solid;
+
+    transition-duration: 200ms;
 
     border-radius: 5px;
     box-shadow: inset 1px 1px 5px rgba(0,0,0,0.4);
@@ -123,6 +126,10 @@ header h1{
 .players input::placeholder{
     color:rgb(183, 183, 183);
     font-weight: 100;
+}
+
+.players input:focus{
+    box-shadow: inset 1px 1px 8px rgba(0,0,0,0.4);
 }
 
 input#player1{
@@ -140,8 +147,9 @@ input#player2{
 .settings {
     grid-area: settings;
     display: flex;
-    border-radius: 5px;
+    cursor: pointer;
     overflow: hidden;
+    border-radius: 5px;
     border: 0.25px rgba(0, 0, 0, 0.1) solid;
 }
 
