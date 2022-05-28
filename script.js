@@ -17,35 +17,47 @@ const game = (() => {
             }
         }
         const computerMove = function () {
-            let board = gameBoard.simpleCopyBoard();
-            const possibleMoves = ((board) => board.reduce((moves, space, i) => (
-                (!space) ? moves.concat(i) : moves), []))
-            let allMoves = possibleMoves(board);
+            let boardCopy = gameBoard.simpleCopyBoard();
+            const possibleMoves = ((boardCopy) => boardCopy.reduce((moves, space, i) => 
+                (!space) ? moves.concat(i) : moves, []))
+            let allMoves = possibleMoves(boardCopy);
 
             const randomMove = () => allMoves[Math.floor(Math.random()*allMoves.length)];
 
             // Minmax Move
-            const minmaxMove = (move = null) => {
-                    // Copy Game Board State
-
-                    // Get possible moves
-
-                    // Iterate through moves
-                    // let currentMove = allMoves.pop();
-                    // Make move as Player
+            const minmaxMove = (board = boardCopy, marker = 'O', depth = 0) => {
+                let scores = [];
+                let moves = possibleMoves(board);
+                let currentlyComputer = (marker === 'O');
+                depth += 1;   // Depth lowers priority of late wins
+                // Iterate through moves
+                for (let i = 0; i < moves.length; i++){
+                    // Copy board and make a move
+                    let tempBoard = board.slice(0);
+                    let currentMove = moves[i];
+                    tempBoard[currentMove] = marker;
                     // Check if move wins
-
-                    // If yes, return score
-
-                    // Compare score with current best (minmax)
-
-                    // If score beats it, replace current best move
-
-                    // If not, repeat but for next player and with negative score
+                    let win = gameBoard.checkWin(tempBoard);
+                    // If yes, add score
+                    if (win) {
+                        scores.push((currentlyComputer) ? 10 - depth : -10 + depth);
+                    }
+                    else if (tempBoard.filter((space)=>space).length === 9){ // If tie add 0
+                        scores.push(0)
+                    } else {  // Otherwise switch players and get score of current board setup
+                        nextPlayerMarker = (currentlyComputer) ? 'X' : 'O';
+                        scores.push(minmaxMove(tempBoard,nextPlayerMarker, depth).bestScore)
+                    }
+                }
+                let bestScore = (currentlyComputer) ? 
+                    scores.reduce((max,score)=>(score>max)? score : max) :
+                    scores.reduce((min,score)=>(score<min)? score : min)
+                let bestMove = moves[scores.indexOf(bestScore)]
+                return {bestScore, bestMove}
             }
 
             if (type === 'Easy') return randomMove();
-            else return minmaxMove();
+            else return minmaxMove().bestMove;
         }
 
         return { setName, getName, getType, setType, makeMove, getMarker, computerMove }
