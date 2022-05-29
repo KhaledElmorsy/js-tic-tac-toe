@@ -1,44 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <script src="script.js" defer></script>
-  <link rel="stylesheet" href="style.css">
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tic-Tac-Toe</title>
-</head>
-<body>
-  <header>
-    <h1>Tic Tac Toe Time!</h1>
-  </header>
-  <main>
-    <div class="game-board">
-      <div data-space="0"></div>
-      <div data-space="1"></div>
-      <div data-space="2"></div>
-      <div data-space="3"></div>
-      <div data-space="4"></div>
-      <div data-space="5"></div>
-      <div data-space="6"></div>
-      <div data-space="7"></div>
-      <div data-space="8"></div>
-    </div>
-    <div class="players">
-      <input type="text" id="player1" data-player-index="0" placeholder="Player 1">
-      <input type="text" id="player2" data-player-index="1" placeholder="Player 2">
-      <div class="settings">
-        <div id="human" class="selected">Human</div>
-        <div id="easy">Easy</div>
-        <div id="hard">Hard</div>
+
+  <head>
+    <script src="script.js" defer></script>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe</title>
+  </head>
+
+  <body class="preload">
+    <header>
+      <h1>Tic Tac Toe Time!</h1>
+    </header>
+    <main>
+      <div class="game-board">
+        <div data-space="0"></div>
+        <div data-space="1"></div>
+        <div data-space="2"></div>
+        <div data-space="3"></div>
+        <div data-space="4"></div>
+        <div data-space="5"></div>
+        <div data-space="6"></div>
+        <div data-space="7"></div>
+        <div data-space="8"></div>
+      </div>
+      <div class="players">
+        <input type="text" id="player1" data-player-index="0" placeholder="Player 1">
+        <input type="text" id="player2" data-player-index="1" placeholder="Player 2">
+        <div class="settings">
+          <div id="human" class="selected">Human</div>
+          <div id="easy">Easy</div>
+          <div id="hard">Hard</div>
+        </div>
+      </div>
+    </main>
+    <div class="victory hidden" data-winner="">
+      <div class="message">
+        <h2 id="winner">Player 1 Wins</h2>
+        <div id="play-again">Play again</div>
       </div>
     </div>
-  </main>
-  <div class="victory hidden" data-winner="">
-    <div class="message">
-      <h2 id="winner">Player 1 Wins</h2>
-      <div id="play-again">Play again</div>
-    </div>
-  </div>
-</body>
+  </body>
+<script>window.document.body.onload = ()=>document.body.classList.remove('preload')</script>
 </html>
