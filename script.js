@@ -18,11 +18,11 @@ const game = (() => {
         }
         const computerMove = function () {
             let boardCopy = gameBoard.simpleCopyBoard();
-            const possibleMoves = ((boardCopy) => boardCopy.reduce((moves, space, i) => 
+            const possibleMoves = ((boardCopy) => boardCopy.reduce((moves, space, i) =>
                 (!space) ? moves.concat(i) : moves, []))
             let allMoves = possibleMoves(boardCopy);
 
-            const randomMove = () => allMoves[Math.floor(Math.random()*allMoves.length)];
+            const randomMove = () => allMoves[Math.floor(Math.random() * allMoves.length)];
 
             // Minmax Move
             const minmaxMove = (board = boardCopy, marker = 'O', depth = 0) => {
@@ -31,7 +31,7 @@ const game = (() => {
                 let currentlyComputer = (marker === 'O');
                 depth += 1;   // Depth lowers priority of late wins
                 // Iterate through moves
-                for (let i = 0; i < moves.length; i++){
+                for (let i = 0; i < moves.length; i++) {
                     // Copy board and make a move
                     let tempBoard = board.slice(0);
                     let currentMove = moves[i];
@@ -42,18 +42,18 @@ const game = (() => {
                     if (win) {
                         scores.push((currentlyComputer) ? 10 - depth : -10 + depth);
                     }
-                    else if (tempBoard.filter((space)=>space).length === 9){ // If tie add 0
+                    else if (tempBoard.filter((space) => space).length === 9) { // If tie add 0
                         scores.push(0)
                     } else {  // Otherwise switch players and get score of current board setup
                         nextPlayerMarker = (currentlyComputer) ? 'X' : 'O';
-                        scores.push(minmaxMove(tempBoard,nextPlayerMarker, depth).bestScore)
+                        scores.push(minmaxMove(tempBoard, nextPlayerMarker, depth).bestScore)
                     }
                 }
-                let bestScore = (currentlyComputer) ? 
-                    scores.reduce((max,score)=>(score>max)? score : max) :
-                    scores.reduce((min,score)=>(score<min)? score : min)
+                let bestScore = (currentlyComputer) ?
+                    scores.reduce((max, score) => (score > max) ? score : max) :
+                    scores.reduce((min, score) => (score < min) ? score : min)
                 let bestMove = moves[scores.indexOf(bestScore)]
-                return {bestScore, bestMove}
+                return { bestScore, bestMove }
             }
 
             if (type === 'Easy') return randomMove();
